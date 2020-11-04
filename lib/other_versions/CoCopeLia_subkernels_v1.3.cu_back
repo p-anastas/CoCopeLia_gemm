@@ -1,0 +1,446 @@
+///
+/// \author Anastasiadis Petros (panastas@cslab.ece.ntua.gr)
+///
+/// \brief Some CUDA function calls with added error-checking
+///
+
+#include <cassert>
+
+#include "CoCopeLia_subkernels.hpp"
+#include "cpu_utils.hpp"
+#include "gpu_utils.hpp"
+
+cudaStream_t h2d_stream = NULL, d2h_stream = NULL, exec_stream = NULL;
+cublasHandle_t handle;
+cudaEvent_t h2d_complete = NULL; 
+
+short CoCopeLia_ptr_check_cuda_9_2(const void * in_ptr, short dev_id)
+{
+	short loc = -1;
+	cudaPointerAttributes ptr_att; 
+	if (cudaSuccess != cudaPointerGetAttributes(&ptr_att, in_ptr)){
+		warning("CoCoBLAS_ptr_check_cuda_9_2: Pointer not visible to CUDA, host alloc or error");
+		cudaCheckErrors();
+	}
+	if (ptr_att.device != dev_id) error("CoCoBLAS_ptr_check_cuda_9_2: Pointer and target device don't match");
+	if (ptr_att.memoryType == cudaMemoryTypeHost) loc = 1; 
+	else if (ptr_att.memoryType == cudaMemoryTypeDevice) loc = 0;
+	// TODO: Unified memory is considered available in the GPU as cuBLASXt ( not bad, not great) 
+	else if (ptr_att.isManaged) loc = 0;
+	else error("CoCoBLAS_ptr_check_cuda_9_2: Invalid memory type");
+	return loc; 
+}
+
+
+short CoCopeLia_ptr_check_cuda_11(const void * in_ptr, short dev_id)
+{
+	short loc = -1;
+	cudaPointerAttributes ptr_att; 
+	if (cudaSuccess != cudaPointerGetAttributes(&ptr_att, in_ptr)){
+		warning("CoCoBLAS_ptr_check_cuda_9_2: Pointer not visible to CUDA, host alloc or error");
+		cudaCheckErrors();
+	}
+	error("CoCoBLAS_ptr_check_cuda_11: Uncomment part in /lib/CoCopeLia_subkernels.cu to include unified memory flag for latest cuda");
+}
+/* Did you say "Backward compatibility"? Probably not! Use this for CUDA > 10.2
+	if (ptr_att.device != dev_id) error("CoCoBLAS_ptr_check_cuda_11: Pointer and target device don't match");
+	if (ptr_att.type == cudaMemoryTypeHost) loc = 1;
+	else if (ptr_att.type == cudaMemoryTypeDevice) loc = 0;
+	// TODO: Unified memory is considered available in the GPU as cuBLASXt ( not bad, not great) 
+	else if (ptr_att.type == cudaMemoryTypeManaged) loc = 0;
+	else error("CoCoBLAS_ptr_check_cuda_11: Invalid memory type");
+	return loc; 
+}
+*/
+
+kernel3_p CoCopeLia_Dgemm_subkernel_init(size_t M, size_t N, size_t K, size_t Ms, size_t Ns, size_t Ks, short A_loc, short B_loc, short C_loc, short device) {
+  	
+	kernel3_p kernel = (kernel3_p)malloc(sizeof(struct subkernel3_gen));
+
+	kernel->device = device;
+	kernel->A_loc = A_loc;
+	kernel->B_loc = B_loc;
+	kernel->C_loc = C_loc;
+
+  	kernel->Ms = Ms;
+  	kernel->Ns = Ns;
+  	kernel->Ks = Ks;
+
+	kernel->ldA = M;
+	kernel->d_ldA = M;
+	kernel->gpu_op_A = CUBLAS_OP_N;
+
+	kernel->ldB = K;
+	kernel->d_ldB = K;
+	kernel->gpu_op_B = CUBLAS_OP_N;
+
+	kernel->ldC = M;
+	kernel->d_ldC = M;
+
+
+  	if (!h2d_stream) cudaStreamCreate(&h2d_stream);
+  	if (!d2h_stream) cudaStreamCreate(&d2h_stream);
+  	if (!exec_stream) cudaStreamCreate(&exec_stream);
+	if (!handle){
+		assert(CUBLAS_STATUS_SUCCESS == cublasCreate(&handle));
+		assert(CUBLAS_STATUS_SUCCESS == cublasSetStream(handle, exec_stream));
+	}
+
+	if (!h2d_complete) cudaEventCreateWithFlags(&h2d_complete, cudaEventDisableTiming);
+	cudaEventCreateWithFlags(&kernel->data_avail, cudaEventDisableTiming);
+	cudaEventCreateWithFlags(&kernel->gemm_complete, cudaEventDisableTiming);
+
+return kernel;
+}
+
+void CoCopeLia_Dgemm_subkernel_destroy(kernel3_p kernel){
+	// TODO: For now use only one device;
+	int dev_id; cudaGetDevice(&dev_id);
+
+	assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->data_avail));
+	assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->gemm_complete));
+	
+}
+
+void CoCopeLia_Dgemm_subkernel_async(double alpha, double beta, kernel3_p kernel, short d2hWaitForH2d){
+	if(!kernel->A_dev && alpha)error("CoCoBLAS_Dgemm_subkernel_async: A_dev buffer unallocated");
+	else if(!kernel->B_dev && alpha )error("CoCoBLAS_Dgemm_subkernel_async: B_dev buffer unallocated");
+	else if(!kernel->C_dev)error("CoCoBLAS_Dgemm_subkernel_async: C_dev buffer unallocated");
+
+	if (kernel->AT_master && kernel->A_loc && alpha) assert(CUBLAS_STATUS_SUCCESS == cublasSetMatrixAsync(kernel->Ms, kernel->Ks, sizeof(double), kernel->As, kernel->ldA, kernel->A_dev, kernel->d_ldA, h2d_stream));
+	if (kernel->BT_master && kernel->B_loc && alpha) assert(CUBLAS_STATUS_SUCCESS == cublasSetMatrixAsync(kernel->Ks, kernel->Ns, sizeof(double), kernel->Bs, kernel->ldB, kernel->B_dev, kernel->d_ldB, h2d_stream));
+	if (kernel->CT_master && kernel->C_loc && beta) assert(CUBLAS_STATUS_SUCCESS == cublasSetMatrixAsync(kernel->Ms, kernel->Ns, sizeof(double), kernel->Cs, kernel->ldC, kernel->C_dev, kernel->d_ldC, h2d_stream));
+	cudaEventRecord(kernel->data_avail, h2d_stream);
+	//cudaCheckErrors();
+	
+	if (d2hWaitForH2d) cudaEventRecord(h2d_complete, h2d_stream);
+
+	cudaStreamWaitEvent(exec_stream, kernel->data_avail,0);
+	if (kernel->AT_master || kernel->BT_master) assert(CUBLAS_STATUS_SUCCESS == cublasDgemm(handle, kernel->gpu_op_A, kernel->gpu_op_B, kernel->Ms, kernel->Ns, kernel->Ks, &alpha, kernel->A_dev, 
+		kernel->d_ldA, kernel->B_dev, kernel->d_ldB, &beta, kernel->C_dev, kernel->d_ldC));
+	else if (kernel->CT_master) assert(CUBLAS_STATUS_SUCCESS == cublasDgemm(handle, kernel->gpu_op_A, kernel->gpu_op_B, kernel->Ms, kernel->Ns, kernel->ldB, &alpha, kernel->A_dev, kernel->d_ldA,
+		kernel->B_dev, kernel->d_ldB, &beta, kernel->C_dev, kernel->d_ldC));
+	if (kernel->CT_out_master) cudaEventRecord(kernel->gemm_complete, exec_stream);
+	//cudaCheckErrors();
+
+	return ;
+}
+
+void CoCopeLia_Dgemm_subkernel_out(kernel3_p kernel)
+{
+	cudaStreamWaitEvent(d2h_stream, kernel->gemm_complete,0);
+	cudaStreamWaitEvent(d2h_stream, h2d_complete,0);
+	assert(CUBLAS_STATUS_SUCCESS == cublasGetMatrixAsync(kernel->Ms, kernel->Ns, sizeof(double), kernel->C_dev, kernel->d_ldC, kernel->Cs, kernel->ldC, d2h_stream));
+	//cudaCheckErrors();
+}
+
+kernel3f_p CoCopeLia_Sgemm_subkernel_init(size_t M, size_t N, size_t K, size_t Ms, size_t Ns, size_t Ks, short A_loc, short B_loc, short C_loc, short device) {
+  	
+	kernel3f_p kernel = (kernel3f_p)malloc(sizeof(struct subkernel3f_gen));
+
+	kernel->device = device;
+	kernel->A_loc = A_loc;
+	kernel->B_loc = B_loc;
+	kernel->C_loc = C_loc;
+
+  	kernel->Ms = Ms;
+  	kernel->Ns = Ns;
+  	kernel->Ks = Ks;
+
+	kernel->ldA = M;
+	kernel->d_ldA = M;
+	kernel->gpu_op_A = CUBLAS_OP_N;
+
+	kernel->ldB = K;
+	kernel->d_ldB = K;
+	kernel->gpu_op_B = CUBLAS_OP_N;
+
+	kernel->ldC = M;
+	kernel->d_ldC = M;
+
+
+  	if (!h2d_stream) cudaStreamCreate(&h2d_stream);
+  	if (!d2h_stream) cudaStreamCreate(&d2h_stream);
+  	if (!exec_stream) cudaStreamCreate(&exec_stream);
+	if (!handle){
+		assert(CUBLAS_STATUS_SUCCESS == cublasCreate(&handle));
+		assert(CUBLAS_STATUS_SUCCESS == cublasSetStream(handle, exec_stream));
+	}
+
+	if (!h2d_complete) cudaEventCreateWithFlags(&h2d_complete, cudaEventDisableTiming);
+	cudaEventCreateWithFlags(&kernel->data_avail, cudaEventDisableTiming);
+	cudaEventCreateWithFlags(&kernel->gemm_complete, cudaEventDisableTiming);
+
+return kernel;
+}
+
+void CoCopeLia_Sgemm_subkernel_destroy(kernel3f_p kernel){
+	// TODO: For now use only one device;
+	int dev_id; cudaGetDevice(&dev_id);
+
+	assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->data_avail));
+	assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->gemm_complete));
+	
+}
+
+void CoCopeLia_Sgemm_subkernel_async(float alpha, float beta, kernel3f_p kernel, short d2hWaitForH2d){
+	if(!kernel->A_dev && alpha)error("CoCoBLAS_Dgemm_subkernel_async: A_dev buffer unallocated");
+	else if(!kernel->B_dev && alpha )error("CoCoBLAS_Dgemm_subkernel_async: B_dev buffer unallocated");
+	else if(!kernel->C_dev)error("CoCoBLAS_Dgemm_subkernel_async: C_dev buffer unallocated");
+
+	if (kernel->AT_master && kernel->A_loc && alpha) assert(CUBLAS_STATUS_SUCCESS == cublasSetMatrixAsync(kernel->Ms, kernel->Ks, sizeof(float), kernel->As, kernel->ldA, kernel->A_dev, kernel->d_ldA, h2d_stream));
+	if (kernel->BT_master && kernel->B_loc && alpha) assert(CUBLAS_STATUS_SUCCESS == cublasSetMatrixAsync(kernel->Ks, kernel->Ns, sizeof(float), kernel->Bs, kernel->ldB, kernel->B_dev, kernel->d_ldB, h2d_stream));
+	if (kernel->CT_master && kernel->C_loc && beta) assert(CUBLAS_STATUS_SUCCESS == cublasSetMatrixAsync(kernel->Ms, kernel->Ns, sizeof(float), kernel->Cs, kernel->ldC, kernel->C_dev, kernel->d_ldC, h2d_stream));
+	cudaEventRecord(kernel->data_avail, h2d_stream);
+	//cudaCheckErrors();
+	
+	if (d2hWaitForH2d) cudaEventRecord(h2d_complete, h2d_stream);
+
+	cudaStreamWaitEvent(exec_stream, kernel->data_avail,0);
+	assert(CUBLAS_STATUS_SUCCESS == cublasSgemm(handle, kernel->gpu_op_A, kernel->gpu_op_B, kernel->Ms, kernel->Ns, kernel->Ks, &alpha, kernel->A_dev, kernel->d_ldA, kernel->B_dev, kernel->d_ldB, &beta, kernel->C_dev, kernel->d_ldC));
+	if (kernel->CT_out_master) cudaEventRecord(kernel->gemm_complete, exec_stream);
+	//cudaCheckErrors();
+
+	return ;
+}
+
+void CoCopeLia_Sgemm_subkernel_out(kernel3f_p kernel)
+{
+	cudaStreamWaitEvent(d2h_stream, kernel->gemm_complete,0);
+	cudaStreamWaitEvent(d2h_stream, h2d_complete,0);
+	assert(CUBLAS_STATUS_SUCCESS == cublasGetMatrixAsync(kernel->Ms, kernel->Ns, sizeof(float), kernel->C_dev, kernel->d_ldC, kernel->Cs, kernel->ldC, d2h_stream));
+	//cudaCheckErrors();
+}
+
+
+/*
+
+kernel2_p CoCoBLAS_dgemv_subkernel_init(size_t M, size_t N, size_t Ms, short A_loc, short x_loc, short y_loc, short device) {
+  	
+	kernel2_p kernel = (kernel2_p)malloc(sizeof(struct subkernel2));
+
+	kernel->device = device;
+	kernel->A_loc = A_loc;
+	kernel->x_loc = x_loc;
+	kernel->y_loc = y_loc;
+
+  	kernel->Ms = Ms;
+  	cudaStreamCreate(&kernel->stream);
+
+	kernel->ldA = M;
+	kernel->d_ldA = M;
+	kernel->gpu_op_A = CUBLAS_OP_N;
+
+	kernel->incx = 1; 
+	kernel->incy = 1;
+ 
+	assert(CUBLAS_STATUS_SUCCESS == cublasCreate(&kernel->handle));
+	assert(CUBLAS_STATUS_SUCCESS == cublasSetStream(kernel->handle, kernel->stream));
+
+	// Data Buffers pre-initialized to prevent runtime overhead
+  	//kernel->C_dev = (double*) gpu_malloc(kernel->Ms * kernel->Ns *sizeof(double));
+
+	cudaEventCreate(&kernel->start);
+	cudaEventCreate(&kernel->setA);
+	cudaEventCreate(&kernel->setx);
+	cudaEventCreate(&kernel->sety);
+	cudaEventCreate(&kernel->gemv);
+	cudaEventCreate(&kernel->goty);
+
+return kernel;
+}
+
+void CoCoBLAS_dgemv_subkernel_destroy(kernel2_p kernel){
+	// TODO: For now use only one device;
+	int dev_id; cudaGetDevice(&dev_id);
+
+//vec_free((void**)&kernel->C_dev, dev_id);
+assert(CUBLAS_STATUS_SUCCESS == cublasDestroy(kernel->handle));
+assert(CUBLAS_STATUS_SUCCESS == cudaStreamDestroy(kernel->stream));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->start));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->setA));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->setx));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->sety));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->gemv));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->goty));
+	
+}
+
+void CoCoBLAS_dgemv_subkernel_async(size_t M, size_t N, double alpha, double beta, kernel2_p kernel, short Ns_master){
+	if(!kernel->A_dev && alpha)error("CoCoBLAS_dgemv_subkernel_async: A_dev buffer unallocated");
+	else if(!kernel->x_dev && alpha )error("CoCoBLAS_dgemv_subkernel_async: x_dev buffer unallocated");
+	else if(!kernel->y_dev)error("CoCoBLAS_dgemv_subkernel_async: y_dev buffer unallocated");
+	//cudaCheckErrors();
+	if (kernel->prev_send)	cudaStreamWaitEvent(kernel->stream, kernel->prev_send,0);
+	cudaEventRecord(kernel->start, kernel->stream);
+	//fprintf(stderr,"Sending A chunk: Rows = %d, Cols = %d\n", N, kernel->Ms);
+	if (kernel->A_loc && alpha)
+		assert(CUBLAS_STATUS_SUCCESS == cublasSetMatrixAsync(kernel->Ms, N, sizeof(double), kernel->As, kernel->ldA, kernel->A_dev, kernel->d_ldA, kernel->stream));
+	cudaEventRecord(kernel->setA, kernel->stream);
+	if (Ns_master && kernel->x_loc && alpha)
+		assert(CUBLAS_STATUS_SUCCESS == cublasSetVectorAsync(N, sizeof(double), kernel->xs, kernel->incx, kernel->x_dev, kernel->incx, kernel->stream));
+	cudaEventRecord(kernel->setx, kernel->stream);
+	if (kernel->y_loc && beta)
+		assert(CUBLAS_STATUS_SUCCESS == cublasSetVectorAsync(kernel->Ms, sizeof(double), kernel->ys, kernel->incy, kernel->y_dev, kernel->incy, kernel->stream));
+	cudaEventRecord(kernel->sety, kernel->stream);
+	//cudaCheckErrors();
+	if (kernel->prev_gemv)cudaStreamWaitEvent(kernel->stream, kernel->prev_gemv,0);
+	//fprintf(stderr,"Running Dgemv with kernel->Ms=%d, N = %d, kernel->d_ldA =%d, kernel->incx=%d, kernel->incy=%d\n", kernel->Ms, N, kernel->d_ldA, kernel->incx, kernel->incy);
+	assert(CUBLAS_STATUS_SUCCESS == cublasDgemv(kernel->handle, kernel->gpu_op_A, kernel->Ms, N, &alpha, kernel->A_dev, kernel->d_ldA, kernel->x_dev, kernel->incx, &beta, kernel->y_dev, kernel->incy));
+	cudaEventRecord(kernel->gemv, kernel->stream);
+	if (kernel->y_loc) assert(CUBLAS_STATUS_SUCCESS == cublasGetVectorAsync(kernel->Ms, sizeof(double), kernel->y_dev, kernel->incy, kernel->ys, kernel->incy, kernel->stream));
+	cudaEventRecord(kernel->goty, kernel->stream);
+	//cudaCheckErrors();
+  	return ;
+}
+
+kernel1_p CoCoBLAS_daxpy_subkernel_init(size_t N, size_t Ns, short x_loc, short y_loc, short device) {
+  	
+	kernel1_p kernel = (kernel1_p)malloc(sizeof(struct subkernel1));
+
+	kernel->device = device;
+	kernel->x_loc = x_loc;
+	kernel->y_loc = y_loc;
+
+  	kernel->Ns = Ns;
+  	cudaStreamCreate(&kernel->stream);
+
+	kernel->incx = 1; 
+	kernel->incy = 1;
+ 
+	assert(CUBLAS_STATUS_SUCCESS == cublasCreate(&kernel->handle));
+	assert(CUBLAS_STATUS_SUCCESS == cublasSetStream(kernel->handle, kernel->stream));
+
+	// Data Buffers pre-initialized to prevent runtime overhead
+  	//kernel->C_dev = (double*) gpu_malloc(kernel->Ms * kernel->Ns *sizeof(double));
+
+	cudaEventCreate(&kernel->start);
+	cudaEventCreate(&kernel->setx);
+	cudaEventCreate(&kernel->sety);
+	cudaEventCreate(&kernel->axpy);
+	cudaEventCreate(&kernel->goty);
+
+return kernel;
+}
+
+void CoCoBLAS_daxpy_subkernel_destroy(kernel1_p kernel){
+	// TODO: For now use only one device;
+	int dev_id; cudaGetDevice(&dev_id);
+
+//vec_free((void**)&kernel->C_dev, dev_id);
+assert(CUBLAS_STATUS_SUCCESS == cublasDestroy(kernel->handle));
+assert(CUBLAS_STATUS_SUCCESS == cudaStreamDestroy(kernel->stream));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->start));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->setx));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->sety));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->axpy));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->goty));
+	
+}
+
+void CoCoBLAS_daxpy_subkernel_async(size_t N, double alpha, kernel1_p kernel){
+	
+	if(!kernel->x_dev && alpha )error("CoCoBLAS_daxpy_subkernel_async: x_dev buffer unallocated");
+	else if(!kernel->y_dev) error("CoCoBLAS_daxpy_subkernel_async: y_dev buffer unallocated");
+	//cudaCheckErrors();
+	if (kernel->prev_send)	cudaStreamWaitEvent(kernel->stream, kernel->prev_send,0);
+	cudaEventRecord(kernel->start, kernel->stream);
+	if (kernel->x_loc && alpha)
+		assert(CUBLAS_STATUS_SUCCESS == cublasSetVectorAsync(kernel->Ns, sizeof(double), kernel->xs, kernel->incx, kernel->x_dev, kernel->incx, kernel->stream));
+	cudaEventRecord(kernel->setx, kernel->stream);
+	if (kernel->y_loc)
+		assert(CUBLAS_STATUS_SUCCESS == cublasSetVectorAsync(kernel->Ns, sizeof(double), kernel->ys, kernel->incy, kernel->y_dev, kernel->incy, kernel->stream));
+	cudaEventRecord(kernel->sety, kernel->stream);
+	//cudaCheckErrors();
+	if (kernel->prev_axpy)cudaStreamWaitEvent(kernel->stream, kernel->prev_axpy,0);
+	assert(CUBLAS_STATUS_SUCCESS == cublasDaxpy(kernel->handle, kernel->Ns, &alpha, kernel->x_dev, kernel->incx, kernel->y_dev, kernel->incy));
+	cudaEventRecord(kernel->axpy, kernel->stream);
+	if (kernel->y_loc) assert(CUBLAS_STATUS_SUCCESS == cublasGetVectorAsync(kernel->Ns, sizeof(double), kernel->y_dev, kernel->incy, kernel->ys, kernel->incy, kernel->stream));
+	cudaEventRecord(kernel->goty, kernel->stream);
+	//cudaCheckErrors();
+  	return ;
+}
+
+kernel3T_p CoCopeLia_dgemm_Tiled_subkernel_init(size_t M, size_t N, size_t K, size_t T, short A_loc, short B_loc, short C_loc, short device) {
+  	
+	kernel3T_p kernel = (kernel3T_p)malloc(sizeof(struct subkernel3));
+
+	kernel->device = device;
+	kernel->A_loc = A_loc;
+	kernel->B_loc = B_loc;
+	kernel->C_loc = C_loc;
+
+  	kernel->T = T;
+  	cudaStreamCreate(&kernel->stream);
+
+	kernel->ldA = M;
+	kernel->d_ldA = M;
+	kernel->gpu_op_A = CUBLAS_OP_N;
+
+	kernel->ldB = K;
+	kernel->d_ldB = K;
+	kernel->gpu_op_B = CUBLAS_OP_N;
+
+	kernel->ldC = M;
+	kernel->d_ldC = M;
+
+	assert(CUBLAS_STATUS_SUCCESS == cublasCreate(&kernel->handle));
+	assert(CUBLAS_STATUS_SUCCESS == cublasSetStream(kernel->handle, kernel->stream));
+
+	// Data Buffers pre-initialized to prevent runtime overhead
+  	//kernel->C_dev = (double*) gpu_malloc(kernel->Ms * kernel->Ns *sizeof(double));
+
+	cudaEventCreate(&kernel->start);
+	cudaEventCreate(&kernel->setA);
+	cudaEventCreate(&kernel->setB);
+	cudaEventCreate(&kernel->setC);
+	cudaEventCreate(&kernel->gemm);
+	cudaEventCreate(&kernel->gotC);
+
+return kernel;
+}
+
+void CoCopeLia_dgemm_Tiled_subkernel_destroy(kernel3T_p kernel){
+	// TODO: For now use only one device;
+	int dev_id; cudaGetDevice(&dev_id);
+
+//vec_free((void**)&kernel->C_dev, dev_id);
+assert(CUBLAS_STATUS_SUCCESS == cublasDestroy(kernel->handle));
+assert(CUBLAS_STATUS_SUCCESS == cudaStreamDestroy(kernel->stream));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->start));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->setA));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->setB));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->setC));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->gemm));
+assert(CUBLAS_STATUS_SUCCESS == cudaEventDestroy(kernel->gotC));
+	
+}
+
+void CoCopeLia_dgemm_Tiled_subkernel_async(double alpha, double beta, kernel3T_p kernel, short AT_master, short BT_master, short CT_master, short CT_out_master){
+  double timer = 0; 
+if(!kernel->A_dev && alpha)error("CoCoBLAS_dgemm_subkernel_async: A_dev buffer unallocated");
+else if(!kernel->B_dev && alpha )error("CoCoBLAS_dgemm_subkernel_async: B_dev buffer unallocated");
+else if(!kernel->C_dev)error("CoCoBLAS_dgemm_subkernel_async: C_dev buffer unallocated");
+//cudaCheckErrors();
+if (kernel->prev_send)cudaStreamWaitEvent(kernel->stream, kernel->prev_send,0);
+cudaEventRecord(kernel->start, kernel->stream);
+if (AT_master && kernel->A_loc && alpha)
+	assert(CUBLAS_STATUS_SUCCESS == cublasSetMatrixAsync(kernel->T, kernel->T, sizeof(double), kernel->As, kernel->ldA, kernel->A_dev, kernel->d_ldA, kernel->stream));
+cudaEventRecord(kernel->setA, kernel->stream);
+if (BT_master && kernel->B_loc && alpha)
+	assert(CUBLAS_STATUS_SUCCESS == cublasSetMatrixAsync(kernel->T, kernel->T, sizeof(double), kernel->Bs, kernel->ldB, kernel->B_dev, kernel->d_ldB, kernel->stream));
+cudaEventRecord(kernel->setB, kernel->stream);
+if (CT_master && kernel->C_loc && beta)
+	assert(CUBLAS_STATUS_SUCCESS == cublasSetMatrixAsync(kernel->T, kernel->T, sizeof(double), kernel->Cs, kernel->ldC, kernel->C_dev, kernel->d_ldC, kernel->stream));
+cudaEventRecord(kernel->setC, kernel->stream);
+//cudaCheckErrors();
+if (kernel->prev_gemm)cudaStreamWaitEvent(kernel->stream, kernel->prev_gemm,0);
+assert(CUBLAS_STATUS_SUCCESS == cublasDgemm(kernel->handle, kernel->gpu_op_A, kernel->gpu_op_B, kernel->T, kernel->T, kernel->T, &alpha, kernel->A_dev, kernel->d_ldA, kernel->B_dev, kernel->d_ldB, &beta, kernel->C_dev, kernel->d_ldC));
+cudaEventRecord(kernel->gemm, kernel->stream);
+if (CT_out_master && kernel->C_loc) assert(CUBLAS_STATUS_SUCCESS == cublasGetMatrixAsync(kernel->T, kernel->T, sizeof(double), kernel->C_dev, kernel->d_ldC, kernel->Cs, kernel->ldC, kernel->stream));
+cudaEventRecord(kernel->gotC, kernel->stream);
+//cudaCheckErrors();
+  return ;
+}
+
+*/

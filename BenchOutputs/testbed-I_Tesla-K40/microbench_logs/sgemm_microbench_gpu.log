@@ -1,0 +1,141 @@
+WARNING ( Generating Logfile... )
+
+Allocating device memory...done.
+Alloc time:	3.966093 ms
+
+Initializing to random values...done.
+Init time:	61.830044 ms
+
+
+Matrix details: A(Col major) B(Col major) C(Col major) -> Mmax = 16384, Nmax = 16384, Kmax = 16384
+Constants: alpha = 1.123400, beta = 1.234500
+Running cublasSgemm-> square T = 256:
+GPU exec time:	 Average=0.061662 ms, Min = 0.058889 ms, Max = 0.083923 ms
+Running cublasSgemm-> square T = 512:
+GPU exec time:	 Average=0.232902 ms, Min = 0.224113 ms, Max = 0.249147 ms
+Running cublasSgemm-> square T = 768:
+GPU exec time:	 Average=0.533330 ms, Min = 0.510931 ms, Max = 0.617981 ms
+Running cublasSgemm-> square T = 1024:
+GPU exec time:	 Average=1.095910 ms, Min = 1.091957 ms, Max = 1.103163 ms
+Running cublasSgemm-> square T = 1280:
+GPU exec time:	 Average=1.633914 ms, Min = 1.627922 ms, Max = 1.641989 ms
+Running cublasSgemm-> square T = 1536:
+GPU exec time:	 Average=3.088241 ms, Min = 3.081799 ms, Max = 3.101826 ms
+Running cublasSgemm-> square T = 1792:
+GPU exec time:	 Average=4.448192 ms, Min = 4.441977 ms, Max = 4.455090 ms
+Running cublasSgemm-> square T = 2048:
+GPU exec time:	 Average=6.044538 ms, Min = 6.036997 ms, Max = 6.052971 ms
+Running cublasSgemm-> square T = 2304:
+GPU exec time:	 Average=8.951211 ms, Min = 8.941889 ms, Max = 8.967876 ms
+Running cublasSgemm-> square T = 2560:
+GPU exec time:	 Average=11.221209 ms, Min = 11.209965 ms, Max = 11.232853 ms
+Running cublasSgemm-> square T = 2816:
+GPU exec time:	 Average=14.986358 ms, Min = 14.956951 ms, Max = 15.026808 ms
+Running cublasSgemm-> square T = 3072:
+GPU exec time:	 Average=19.240847 ms, Min = 19.230127 ms, Max = 19.258976 ms
+Running cublasSgemm-> square T = 3328:
+GPU exec time:	 Average=24.479632 ms, Min = 24.453878 ms, Max = 24.502039 ms
+Running cublasSgemm-> square T = 3584:
+GPU exec time:	 Average=30.494862 ms, Min = 30.414820 ms, Max = 30.568123 ms
+Running cublasSgemm-> square T = 3840:
+GPU exec time:	 Average=36.948528 ms, Min = 36.931992 ms, Max = 36.963940 ms
+Running cublasSgemm-> square T = 4096:
+GPU exec time:	 Average=44.864578 ms, Min = 44.670105 ms, Max = 44.999123 ms
+Running cublasSgemm-> square T = 4352:
+GPU exec time:	 Average=53.920617 ms, Min = 53.865194 ms, Max = 53.972006 ms
+Running cublasSgemm-> square T = 4608:
+GPU exec time:	 Average=63.282657 ms, Min = 63.256979 ms, Max = 63.308954 ms
+Running cublasSgemm-> square T = 4864:
+GPU exec time:	 Average=74.328120 ms, Min = 74.283123 ms, Max = 74.383020 ms
+Running cublasSgemm-> square T = 5120:
+GPU exec time:	 Average=87.051997 ms, Min = 86.948872 ms, Max = 87.121010 ms
+Running cublasSgemm-> square T = 5376:
+GPU exec time:	 Average=100.507281 ms, Min = 100.471973 ms, Max = 100.532055 ms
+Running cublasSgemm-> square T = 5632:
+GPU exec time:	 Average=114.714575 ms, Min = 114.655018 ms, Max = 114.778996 ms
+Running cublasSgemm-> square T = 5888:
+GPU exec time:	 Average=131.159780 ms, Min = 131.054878 ms, Max = 131.247997 ms
+Running cublasSgemm-> square T = 6144:
+GPU exec time:	 Average=148.791480 ms, Min = 148.757935 ms, Max = 148.833036 ms
+Running cublasSgemm-> square T = 6400:
+GPU exec time:	 Average=167.721269 ms, Min = 167.644978 ms, Max = 167.803049 ms
+Running cublasSgemm-> square T = 6656:
+GPU exec time:	 Average=188.812330 ms, Min = 188.651085 ms, Max = 188.943863 ms
+Running cublasSgemm-> square T = 6912:
+GPU exec time:	 Average=210.392399 ms, Min = 210.319042 ms, Max = 210.464001 ms
+Running cublasSgemm-> square T = 7168:
+GPU exec time:	 Average=234.441609 ms, Min = 234.349966 ms, Max = 234.611988 ms
+Running cublasSgemm-> square T = 7424:
+GPU exec time:	 Average=260.941770 ms, Min = 260.824203 ms, Max = 261.039019 ms
+Running cublasSgemm-> square T = 7680:
+GPU exec time:	 Average=288.248343 ms, Min = 288.187981 ms, Max = 288.325787 ms
+Running cublasSgemm-> square T = 7936:
+GPU exec time:	 Average=317.339950 ms, Min = 317.216873 ms, Max = 317.432880 ms
+Running cublasSgemm-> square T = 8192:
+GPU exec time:	 Average=349.649291 ms, Min = 349.484921 ms, Max = 349.834204 ms
+Running cublasSgemm-> square T = 8448:
+GPU exec time:	 Average=382.138579 ms, Min = 382.035971 ms, Max = 382.303953 ms
+Running cublasSgemm-> square T = 8704:
+GPU exec time:	 Average=417.644823 ms, Min = 417.464972 ms, Max = 417.803049 ms
+Running cublasSgemm-> square T = 8960:
+GPU exec time:	 Average=456.323140 ms, Min = 456.138849 ms, Max = 456.505060 ms
+Running cublasSgemm-> square T = 9216:
+GPU exec time:	 Average=494.004748 ms, Min = 493.952036 ms, Max = 494.070053 ms
+Running cublasSgemm-> square T = 9472:
+GPU exec time:	 Average=537.439089 ms, Min = 537.338018 ms, Max = 537.558079 ms
+Running cublasSgemm-> square T = 9728:
+GPU exec time:	 Average=582.907951 ms, Min = 582.731962 ms, Max = 583.116055 ms
+Running cublasSgemm-> square T = 9984:
+GPU exec time:	 Average=628.171442 ms, Min = 628.041983 ms, Max = 628.293037 ms
+Running cublasSgemm-> square T = 10240:
+GPU exec time:	 Average=677.891250 ms, Min = 677.704096 ms, Max = 678.249121 ms
+Running cublasSgemm-> square T = 10496:
+GPU exec time:	 Average=731.569078 ms, Min = 731.248140 ms, Max = 731.812954 ms
+Running cublasSgemm-> square T = 10752:
+GPU exec time:	 Average=783.316834 ms, Min = 783.242941 ms, Max = 783.430815 ms
+Running cublasSgemm-> square T = 11008:
+GPU exec time:	 Average=840.947416 ms, Min = 840.755939 ms, Max = 841.159821 ms
+Running cublasSgemm-> square T = 11264:
+GPU exec time:	 Average=903.052931 ms, Min = 902.730227 ms, Max = 903.268099 ms
+Running cublasSgemm-> square T = 11520:
+GPU exec time:	 Average=962.861531 ms, Min = 962.568045 ms, Max = 963.209152 ms
+Running cublasSgemm-> square T = 11776:
+GPU exec time:	 Average=1028.951652 ms, Min = 1028.765917 ms, Max = 1029.185057 ms
+Running cublasSgemm-> square T = 12032:
+GPU exec time:	 Average=1099.267917 ms, Min = 1098.859072 ms, Max = 1099.598885 ms
+Running cublasSgemm-> square T = 12288:
+GPU exec time:	 Average=1168.060641 ms, Min = 1167.821884 ms, Max = 1168.282986 ms
+Running cublasSgemm-> square T = 12544:
+GPU exec time:	 Average=1242.401080 ms, Min = 1242.089033 ms, Max = 1242.736101 ms
+Running cublasSgemm-> square T = 12800:
+GPU exec time:	 Average=1321.946681 ms, Min = 1321.686983 ms, Max = 1322.175980 ms
+Running cublasSgemm-> square T = 13056:
+GPU exec time:	 Average=1399.071631 ms, Min = 1398.838997 ms, Max = 1399.214983 ms
+Running cublasSgemm-> square T = 13312:
+GPU exec time:	 Average=1483.305740 ms, Min = 1483.093023 ms, Max = 1483.540058 ms
+Running cublasSgemm-> square T = 13568:
+GPU exec time:	 Average=1572.666769 ms, Min = 1572.175980 ms, Max = 1573.079109 ms
+Running cublasSgemm-> square T = 13824:
+GPU exec time:	 Average=1658.929548 ms, Min = 1658.382893 ms, Max = 1659.700871 ms
+Running cublasSgemm-> square T = 14080:
+GPU exec time:	 Average=1753.486395 ms, Min = 1753.014088 ms, Max = 1754.010201 ms
+Running cublasSgemm-> square T = 14336:
+GPU exec time:	 Average=1853.501081 ms, Min = 1852.941990 ms, Max = 1854.038000 ms
+Running cublasSgemm-> square T = 14592:
+GPU exec time:	 Average=1950.358479 ms, Min = 1949.938059 ms, Max = 1950.625896 ms
+Running cublasSgemm-> square T = 14848:
+GPU exec time:	 Average=2055.245330 ms, Min = 2054.834127 ms, Max = 2055.651903 ms
+Running cublasSgemm-> square T = 15104:
+GPU exec time:	 Average=2166.165349 ms, Min = 2165.550947 ms, Max = 2166.767836 ms
+Running cublasSgemm-> square T = 15360:
+GPU exec time:	 Average=2273.851130 ms, Min = 2273.308039 ms, Max = 2274.553061 ms
+Running cublasSgemm-> square T = 15616:
+GPU exec time:	 Average=2389.806058 ms, Min = 2388.684988 ms, Max = 2390.407085 ms
+Running cublasSgemm-> square T = 15872:
+GPU exec time:	 Average=2512.112827 ms, Min = 2511.651039 ms, Max = 2512.535095 ms
+Running cublasSgemm-> square T = 16128:
+GPU exec time:	 Average=2627.708852 ms, Min = 2627.286911 ms, Max = 2628.315926 ms
+Running cublasSgemm-> square T = 16384:
+GPU exec time:	 Average=2757.843037 ms, Min = 2757.254839 ms, Max = 2758.969069 ms
+Ran 64 Benchmarks.Finallizing...
+-----Destructing:

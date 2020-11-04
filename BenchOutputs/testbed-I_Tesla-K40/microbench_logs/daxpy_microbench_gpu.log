@@ -1,0 +1,525 @@
+WARNING ( Generating Logfile... )
+
+Allocating device memory...done.
+Alloc time:	4.639149 ms
+
+Initializing to random values...done.
+Init time:	67.636967 ms
+
+
+Tile details: x(inc=1) y(inc=1) -> maxDim = 268435456
+Constants: alpha = 1.123400
+Running cublasDaxpy-> N = 1048576:
+GPU exec time:	 Average=0.138953 ms, Min = 0.137091 ms, Max = 0.142097 ms
+Running cublasDaxpy-> N = 2097152:
+GPU exec time:	 Average=0.268590 ms, Min = 0.265121 ms, Max = 0.278950 ms
+Running cublasDaxpy-> N = 3145728:
+GPU exec time:	 Average=0.394902 ms, Min = 0.393152 ms, Max = 0.405073 ms
+Running cublasDaxpy-> N = 4194304:
+GPU exec time:	 Average=0.522962 ms, Min = 0.520945 ms, Max = 0.534058 ms
+Running cublasDaxpy-> N = 5242880:
+GPU exec time:	 Average=0.650499 ms, Min = 0.648022 ms, Max = 0.660896 ms
+Running cublasDaxpy-> N = 6291456:
+GPU exec time:	 Average=0.778568 ms, Min = 0.776052 ms, Max = 0.791073 ms
+Running cublasDaxpy-> N = 7340032:
+GPU exec time:	 Average=0.905850 ms, Min = 0.902891 ms, Max = 0.916004 ms
+Running cublasDaxpy-> N = 8388608:
+GPU exec time:	 Average=1.033843 ms, Min = 1.030922 ms, Max = 1.040936 ms
+Running cublasDaxpy-> N = 9437184:
+GPU exec time:	 Average=1.161029 ms, Min = 1.158953 ms, Max = 1.171827 ms
+Running cublasDaxpy-> N = 10485760:
+GPU exec time:	 Average=1.289489 ms, Min = 1.286983 ms, Max = 1.300097 ms
+Running cublasDaxpy-> N = 11534336:
+GPU exec time:	 Average=1.417141 ms, Min = 1.414776 ms, Max = 1.425982 ms
+Running cublasDaxpy-> N = 12582912:
+GPU exec time:	 Average=1.545129 ms, Min = 1.541853 ms, Max = 1.557112 ms
+Running cublasDaxpy-> N = 13631488:
+GPU exec time:	 Average=1.673760 ms, Min = 1.669168 ms, Max = 1.682043 ms
+Running cublasDaxpy-> N = 14680064:
+GPU exec time:	 Average=1.801281 ms, Min = 1.797915 ms, Max = 1.811981 ms
+Running cublasDaxpy-> N = 15728640:
+GPU exec time:	 Average=1.928747 ms, Min = 1.925945 ms, Max = 1.935959 ms
+Running cublasDaxpy-> N = 16777216:
+GPU exec time:	 Average=2.056658 ms, Min = 2.053022 ms, Max = 2.065897 ms
+Running cublasDaxpy-> N = 17825792:
+GPU exec time:	 Average=2.184889 ms, Min = 2.182007 ms, Max = 2.192974 ms
+Running cublasDaxpy-> N = 18874368:
+GPU exec time:	 Average=2.312438 ms, Min = 2.308846 ms, Max = 2.321959 ms
+Running cublasDaxpy-> N = 19922944:
+GPU exec time:	 Average=2.439661 ms, Min = 2.436876 ms, Max = 2.448082 ms
+Running cublasDaxpy-> N = 20971520:
+GPU exec time:	 Average=2.568059 ms, Min = 2.563953 ms, Max = 2.578974 ms
+Running cublasDaxpy-> N = 22020096:
+GPU exec time:	 Average=2.695119 ms, Min = 2.691031 ms, Max = 2.701998 ms
+Running cublasDaxpy-> N = 23068672:
+GPU exec time:	 Average=2.823691 ms, Min = 2.819061 ms, Max = 2.834082 ms
+Running cublasDaxpy-> N = 24117248:
+GPU exec time:	 Average=2.951062 ms, Min = 2.946854 ms, Max = 2.959013 ms
+Running cublasDaxpy-> N = 25165824:
+GPU exec time:	 Average=3.078818 ms, Min = 3.074884 ms, Max = 3.089190 ms
+Running cublasDaxpy-> N = 26214400:
+GPU exec time:	 Average=3.206358 ms, Min = 3.201008 ms, Max = 3.216028 ms
+Running cublasDaxpy-> N = 27262976:
+GPU exec time:	 Average=3.334382 ms, Min = 3.329992 ms, Max = 3.345013 ms
+Running cublasDaxpy-> N = 28311552:
+GPU exec time:	 Average=3.462231 ms, Min = 3.458023 ms, Max = 3.472090 ms
+Running cublasDaxpy-> N = 29360128:
+GPU exec time:	 Average=3.589940 ms, Min = 3.585100 ms, Max = 3.599882 ms
+Running cublasDaxpy-> N = 30408704:
+GPU exec time:	 Average=3.717780 ms, Min = 3.713131 ms, Max = 3.730059 ms
+Running cublasDaxpy-> N = 31457280:
+GPU exec time:	 Average=3.845503 ms, Min = 3.840923 ms, Max = 3.856182 ms
+Running cublasDaxpy-> N = 32505856:
+GPU exec time:	 Average=3.973007 ms, Min = 3.968000 ms, Max = 3.979921 ms
+Running cublasDaxpy-> N = 33554432:
+GPU exec time:	 Average=4.101241 ms, Min = 4.096031 ms, Max = 4.111052 ms
+Running cublasDaxpy-> N = 34603008:
+GPU exec time:	 Average=4.228706 ms, Min = 4.222870 ms, Max = 4.250050 ms
+Running cublasDaxpy-> N = 35651584:
+GPU exec time:	 Average=4.356179 ms, Min = 4.350185 ms, Max = 4.364967 ms
+Running cublasDaxpy-> N = 36700160:
+GPU exec time:	 Average=4.483888 ms, Min = 4.476070 ms, Max = 4.499912 ms
+Running cublasDaxpy-> N = 37748736:
+GPU exec time:	 Average=4.611788 ms, Min = 4.606009 ms, Max = 4.616022 ms
+Running cublasDaxpy-> N = 38797312:
+GPU exec time:	 Average=4.739351 ms, Min = 4.734039 ms, Max = 4.756927 ms
+Running cublasDaxpy-> N = 39845888:
+GPU exec time:	 Average=4.867320 ms, Min = 4.863024 ms, Max = 4.878998 ms
+Running cublasDaxpy-> N = 40894464:
+GPU exec time:	 Average=4.995022 ms, Min = 4.989862 ms, Max = 5.005836 ms
+Running cublasDaxpy-> N = 41943040:
+GPU exec time:	 Average=5.122321 ms, Min = 5.116940 ms, Max = 5.133867 ms
+Running cublasDaxpy-> N = 42991616:
+GPU exec time:	 Average=5.250757 ms, Min = 5.244017 ms, Max = 5.259037 ms
+Running cublasDaxpy-> N = 44040192:
+GPU exec time:	 Average=5.378461 ms, Min = 5.372047 ms, Max = 5.388975 ms
+Running cublasDaxpy-> N = 45088768:
+GPU exec time:	 Average=5.506420 ms, Min = 5.500793 ms, Max = 5.518198 ms
+Running cublasDaxpy-> N = 46137344:
+GPU exec time:	 Average=5.633769 ms, Min = 5.628109 ms, Max = 5.645037 ms
+Running cublasDaxpy-> N = 47185920:
+GPU exec time:	 Average=5.760939 ms, Min = 5.753994 ms, Max = 5.766153 ms
+Running cublasDaxpy-> N = 48234496:
+GPU exec time:	 Average=5.889373 ms, Min = 5.882978 ms, Max = 5.902052 ms
+Running cublasDaxpy-> N = 49283072:
+GPU exec time:	 Average=6.016572 ms, Min = 6.010056 ms, Max = 6.042957 ms
+Running cublasDaxpy-> N = 50331648:
+GPU exec time:	 Average=6.145101 ms, Min = 6.138086 ms, Max = 6.162882 ms
+Running cublasDaxpy-> N = 51380224:
+GPU exec time:	 Average=6.272078 ms, Min = 6.266117 ms, Max = 6.278992 ms
+Running cublasDaxpy-> N = 52428800:
+GPU exec time:	 Average=6.400008 ms, Min = 6.393909 ms, Max = 6.410837 ms
+Running cublasDaxpy-> N = 53477376:
+GPU exec time:	 Average=6.528122 ms, Min = 6.521940 ms, Max = 6.535053 ms
+Running cublasDaxpy-> N = 54525952:
+GPU exec time:	 Average=6.655700 ms, Min = 6.648064 ms, Max = 6.662846 ms
+Running cublasDaxpy-> N = 55574528:
+GPU exec time:	 Average=6.783571 ms, Min = 6.776810 ms, Max = 6.834030 ms
+Running cublasDaxpy-> N = 56623104:
+GPU exec time:	 Average=6.911058 ms, Min = 6.903887 ms, Max = 6.927013 ms
+Running cublasDaxpy-> N = 57671680:
+GPU exec time:	 Average=7.038839 ms, Min = 7.031918 ms, Max = 7.048130 ms
+Running cublasDaxpy-> N = 58720256:
+GPU exec time:	 Average=7.166362 ms, Min = 7.158995 ms, Max = 7.179976 ms
+Running cublasDaxpy-> N = 59768832:
+GPU exec time:	 Average=7.293854 ms, Min = 7.287025 ms, Max = 7.300138 ms
+Running cublasDaxpy-> N = 60817408:
+GPU exec time:	 Average=7.422407 ms, Min = 7.414103 ms, Max = 7.438183 ms
+Running cublasDaxpy-> N = 61865984:
+GPU exec time:	 Average=7.549739 ms, Min = 7.543087 ms, Max = 7.563114 ms
+Running cublasDaxpy-> N = 62914560:
+GPU exec time:	 Average=7.677557 ms, Min = 7.670879 ms, Max = 7.693052 ms
+Running cublasDaxpy-> N = 63963136:
+GPU exec time:	 Average=7.805278 ms, Min = 7.797003 ms, Max = 7.814884 ms
+Running cublasDaxpy-> N = 65011712:
+GPU exec time:	 Average=7.933152 ms, Min = 7.924795 ms, Max = 7.953882 ms
+Running cublasDaxpy-> N = 66060288:
+GPU exec time:	 Average=8.060551 ms, Min = 8.053064 ms, Max = 8.074999 ms
+Running cublasDaxpy-> N = 67108864:
+GPU exec time:	 Average=8.188550 ms, Min = 8.181095 ms, Max = 8.198023 ms
+Running cublasDaxpy-> N = 68157440:
+GPU exec time:	 Average=8.316491 ms, Min = 8.309126 ms, Max = 8.323908 ms
+Running cublasDaxpy-> N = 69206016:
+GPU exec time:	 Average=8.443892 ms, Min = 8.435965 ms, Max = 8.451939 ms
+Running cublasDaxpy-> N = 70254592:
+GPU exec time:	 Average=8.571892 ms, Min = 8.563995 ms, Max = 8.579969 ms
+Running cublasDaxpy-> N = 71303168:
+GPU exec time:	 Average=8.699281 ms, Min = 8.691788 ms, Max = 8.707047 ms
+Running cublasDaxpy-> N = 72351744:
+GPU exec time:	 Average=8.827612 ms, Min = 8.818865 ms, Max = 8.852959 ms
+Running cublasDaxpy-> N = 73400320:
+GPU exec time:	 Average=8.954544 ms, Min = 8.946896 ms, Max = 8.969069 ms
+Running cublasDaxpy-> N = 74448896:
+GPU exec time:	 Average=9.082818 ms, Min = 9.075880 ms, Max = 9.090900 ms
+Running cublasDaxpy-> N = 75497472:
+GPU exec time:	 Average=9.210868 ms, Min = 9.200811 ms, Max = 9.223938 ms
+Running cublasDaxpy-> N = 76546048:
+GPU exec time:	 Average=9.337978 ms, Min = 9.328842 ms, Max = 9.348154 ms
+Running cublasDaxpy-> N = 77594624:
+GPU exec time:	 Average=9.466667 ms, Min = 9.456873 ms, Max = 9.475946 ms
+Running cublasDaxpy-> N = 78643200:
+GPU exec time:	 Average=9.593322 ms, Min = 9.584904 ms, Max = 9.602070 ms
+Running cublasDaxpy-> N = 79691776:
+GPU exec time:	 Average=9.721828 ms, Min = 9.712934 ms, Max = 9.737015 ms
+Running cublasDaxpy-> N = 80740352:
+GPU exec time:	 Average=9.849381 ms, Min = 9.840012 ms, Max = 9.857893 ms
+Running cublasDaxpy-> N = 81788928:
+GPU exec time:	 Average=9.976928 ms, Min = 9.968996 ms, Max = 9.989977 ms
+Running cublasDaxpy-> N = 82837504:
+GPU exec time:	 Average=10.104790 ms, Min = 10.094881 ms, Max = 10.117054 ms
+Running cublasDaxpy-> N = 83886080:
+GPU exec time:	 Average=10.232401 ms, Min = 10.223866 ms, Max = 10.250092 ms
+Running cublasDaxpy-> N = 84934656:
+GPU exec time:	 Average=10.360610 ms, Min = 10.351896 ms, Max = 10.376215 ms
+Running cublasDaxpy-> N = 85983232:
+GPU exec time:	 Average=10.488141 ms, Min = 10.479927 ms, Max = 10.518074 ms
+Running cublasDaxpy-> N = 87031808:
+GPU exec time:	 Average=10.615821 ms, Min = 10.607004 ms, Max = 10.628939 ms
+Running cublasDaxpy-> N = 88080384:
+GPU exec time:	 Average=10.743322 ms, Min = 10.733843 ms, Max = 10.755062 ms
+Running cublasDaxpy-> N = 89128960:
+GPU exec time:	 Average=10.871150 ms, Min = 10.862827 ms, Max = 10.886908 ms
+Running cublasDaxpy-> N = 90177536:
+GPU exec time:	 Average=10.998747 ms, Min = 10.987043 ms, Max = 11.007786 ms
+Running cublasDaxpy-> N = 91226112:
+GPU exec time:	 Average=11.126440 ms, Min = 11.116982 ms, Max = 11.139870 ms
+Running cublasDaxpy-> N = 92274688:
+GPU exec time:	 Average=11.254568 ms, Min = 11.242867 ms, Max = 11.277199 ms
+Running cublasDaxpy-> N = 93323264:
+GPU exec time:	 Average=11.381903 ms, Min = 11.371851 ms, Max = 11.396170 ms
+Running cublasDaxpy-> N = 94371840:
+GPU exec time:	 Average=11.509786 ms, Min = 11.500120 ms, Max = 11.518955 ms
+Running cublasDaxpy-> N = 95420416:
+GPU exec time:	 Average=11.637511 ms, Min = 11.627913 ms, Max = 11.646986 ms
+Running cublasDaxpy-> N = 96468992:
+GPU exec time:	 Average=11.765280 ms, Min = 11.753798 ms, Max = 11.782885 ms
+Running cublasDaxpy-> N = 97517568:
+GPU exec time:	 Average=11.892848 ms, Min = 11.883020 ms, Max = 11.909962 ms
+Running cublasDaxpy-> N = 98566144:
+GPU exec time:	 Average=12.020881 ms, Min = 12.009859 ms, Max = 12.036085 ms
+Running cublasDaxpy-> N = 99614720:
+GPU exec time:	 Average=12.148552 ms, Min = 12.138844 ms, Max = 12.161970 ms
+Running cublasDaxpy-> N = 100663296:
+GPU exec time:	 Average=12.276356 ms, Min = 12.264967 ms, Max = 12.291908 ms
+Running cublasDaxpy-> N = 101711872:
+GPU exec time:	 Average=12.403932 ms, Min = 12.392998 ms, Max = 12.420893 ms
+Running cublasDaxpy-> N = 102760448:
+GPU exec time:	 Average=12.531359 ms, Min = 12.521029 ms, Max = 12.542963 ms
+Running cublasDaxpy-> N = 103809024:
+GPU exec time:	 Average=12.659078 ms, Min = 12.647867 ms, Max = 12.670040 ms
+Running cublasDaxpy-> N = 104857600:
+GPU exec time:	 Average=12.787602 ms, Min = 12.776852 ms, Max = 12.803078 ms
+Running cublasDaxpy-> N = 105906176:
+GPU exec time:	 Average=12.914529 ms, Min = 12.903929 ms, Max = 12.925148 ms
+Running cublasDaxpy-> N = 106954752:
+GPU exec time:	 Average=13.042953 ms, Min = 13.030767 ms, Max = 13.059139 ms
+Running cublasDaxpy-> N = 108003328:
+GPU exec time:	 Average=13.170071 ms, Min = 13.156891 ms, Max = 13.180971 ms
+Running cublasDaxpy-> N = 109051904:
+GPU exec time:	 Average=13.297751 ms, Min = 13.285875 ms, Max = 13.314009 ms
+Running cublasDaxpy-> N = 110100480:
+GPU exec time:	 Average=13.425920 ms, Min = 13.415813 ms, Max = 13.437033 ms
+Running cublasDaxpy-> N = 111149056:
+GPU exec time:	 Average=13.553689 ms, Min = 13.542175 ms, Max = 13.572931 ms
+Running cublasDaxpy-> N = 112197632:
+GPU exec time:	 Average=13.681650 ms, Min = 13.669968 ms, Max = 13.695002 ms
+Running cublasDaxpy-> N = 113246208:
+GPU exec time:	 Average=13.808920 ms, Min = 13.796806 ms, Max = 13.825893 ms
+Running cublasDaxpy-> N = 114294784:
+GPU exec time:	 Average=13.936441 ms, Min = 13.923883 ms, Max = 13.955116 ms
+Running cublasDaxpy-> N = 115343360:
+GPU exec time:	 Average=14.063888 ms, Min = 14.051914 ms, Max = 14.081955 ms
+Running cublasDaxpy-> N = 116391936:
+GPU exec time:	 Average=14.192450 ms, Min = 14.180183 ms, Max = 14.205217 ms
+Running cublasDaxpy-> N = 117440512:
+GPU exec time:	 Average=14.320343 ms, Min = 14.307022 ms, Max = 14.352083 ms
+Running cublasDaxpy-> N = 118489088:
+GPU exec time:	 Average=14.447567 ms, Min = 14.436960 ms, Max = 14.462948 ms
+Running cublasDaxpy-> N = 119537664:
+GPU exec time:	 Average=14.575732 ms, Min = 14.562845 ms, Max = 14.588118 ms
+Running cublasDaxpy-> N = 120586240:
+GPU exec time:	 Average=14.702685 ms, Min = 14.690876 ms, Max = 14.720917 ms
+Running cublasDaxpy-> N = 121634816:
+GPU exec time:	 Average=14.831078 ms, Min = 14.816999 ms, Max = 14.842033 ms
+Running cublasDaxpy-> N = 122683392:
+GPU exec time:	 Average=14.958262 ms, Min = 14.946938 ms, Max = 14.970064 ms
+Running cublasDaxpy-> N = 123731968:
+GPU exec time:	 Average=15.085917 ms, Min = 15.072107 ms, Max = 15.100002 ms
+Running cublasDaxpy-> N = 124780544:
+GPU exec time:	 Average=15.213778 ms, Min = 15.201092 ms, Max = 15.228987 ms
+Running cublasDaxpy-> N = 125829120:
+GPU exec time:	 Average=15.341592 ms, Min = 15.329838 ms, Max = 15.352964 ms
+Running cublasDaxpy-> N = 126877696:
+GPU exec time:	 Average=15.469050 ms, Min = 15.456915 ms, Max = 15.481949 ms
+Running cublasDaxpy-> N = 127926272:
+GPU exec time:	 Average=15.596821 ms, Min = 15.584946 ms, Max = 15.609026 ms
+Running cublasDaxpy-> N = 128974848:
+GPU exec time:	 Average=15.724809 ms, Min = 15.713930 ms, Max = 15.736103 ms
+Running cublasDaxpy-> N = 130023424:
+GPU exec time:	 Average=15.852559 ms, Min = 15.840769 ms, Max = 15.867949 ms
+Running cublasDaxpy-> N = 131072000:
+GPU exec time:	 Average=15.980470 ms, Min = 15.967131 ms, Max = 16.011953 ms
+Running cublasDaxpy-> N = 132120576:
+GPU exec time:	 Average=16.107831 ms, Min = 16.096830 ms, Max = 16.126871 ms
+Running cublasDaxpy-> N = 133169152:
+GPU exec time:	 Average=16.236677 ms, Min = 16.223907 ms, Max = 16.247988 ms
+Running cublasDaxpy-> N = 134217728:
+GPU exec time:	 Average=16.368141 ms, Min = 16.355038 ms, Max = 16.381025 ms
+Running cublasDaxpy-> N = 135266304:
+GPU exec time:	 Average=16.495690 ms, Min = 16.482830 ms, Max = 16.508102 ms
+Running cublasDaxpy-> N = 136314880:
+GPU exec time:	 Average=16.624677 ms, Min = 16.611099 ms, Max = 16.641855 ms
+Running cublasDaxpy-> N = 137363456:
+GPU exec time:	 Average=16.757367 ms, Min = 16.744137 ms, Max = 16.771078 ms
+Running cublasDaxpy-> N = 138412032:
+GPU exec time:	 Average=16.889527 ms, Min = 16.875982 ms, Max = 16.901970 ms
+Running cublasDaxpy-> N = 139460608:
+GPU exec time:	 Average=17.020659 ms, Min = 17.006874 ms, Max = 17.037153 ms
+Running cublasDaxpy-> N = 140509184:
+GPU exec time:	 Average=17.149100 ms, Min = 17.135143 ms, Max = 17.167091 ms
+Running cublasDaxpy-> N = 141557760:
+GPU exec time:	 Average=17.277830 ms, Min = 17.264843 ms, Max = 17.292976 ms
+Running cublasDaxpy-> N = 142606336:
+GPU exec time:	 Average=17.409658 ms, Min = 17.395973 ms, Max = 17.423868 ms
+Running cublasDaxpy-> N = 143654912:
+GPU exec time:	 Average=17.540720 ms, Min = 17.526865 ms, Max = 17.554045 ms
+Running cublasDaxpy-> N = 144703488:
+GPU exec time:	 Average=17.668509 ms, Min = 17.654896 ms, Max = 17.682791 ms
+Running cublasDaxpy-> N = 145752064:
+GPU exec time:	 Average=17.797880 ms, Min = 17.782927 ms, Max = 17.813921 ms
+Running cublasDaxpy-> N = 146800640:
+GPU exec time:	 Average=17.929218 ms, Min = 17.915010 ms, Max = 17.944098 ms
+Running cublasDaxpy-> N = 147849216:
+GPU exec time:	 Average=18.060088 ms, Min = 18.043995 ms, Max = 18.074036 ms
+Running cublasDaxpy-> N = 148897792:
+GPU exec time:	 Average=18.188629 ms, Min = 18.173933 ms, Max = 18.206120 ms
+Running cublasDaxpy-> N = 149946368:
+GPU exec time:	 Average=18.318279 ms, Min = 18.302917 ms, Max = 18.332958 ms
+Running cublasDaxpy-> N = 150994944:
+GPU exec time:	 Average=18.448730 ms, Min = 18.434048 ms, Max = 18.465996 ms
+Running cublasDaxpy-> N = 152043520:
+GPU exec time:	 Average=18.580089 ms, Min = 18.563986 ms, Max = 18.597126 ms
+Running cublasDaxpy-> N = 153092096:
+GPU exec time:	 Average=18.708436 ms, Min = 18.691063 ms, Max = 18.723965 ms
+Running cublasDaxpy-> N = 154140672:
+GPU exec time:	 Average=18.837590 ms, Min = 18.821001 ms, Max = 18.858194 ms
+Running cublasDaxpy-> N = 155189248:
+GPU exec time:	 Average=18.969138 ms, Min = 18.952131 ms, Max = 18.985033 ms
+Running cublasDaxpy-> N = 156237824:
+GPU exec time:	 Average=19.100366 ms, Min = 19.081116 ms, Max = 19.114971 ms
+Running cublasDaxpy-> N = 157286400:
+GPU exec time:	 Average=19.228919 ms, Min = 19.213915 ms, Max = 19.258022 ms
+Running cublasDaxpy-> N = 158334976:
+GPU exec time:	 Average=19.357493 ms, Min = 19.337893 ms, Max = 19.372940 ms
+Running cublasDaxpy-> N = 159383552:
+GPU exec time:	 Average=19.489198 ms, Min = 19.472122 ms, Max = 19.506216 ms
+Running cublasDaxpy-> N = 160432128:
+GPU exec time:	 Average=19.619880 ms, Min = 19.601107 ms, Max = 19.638062 ms
+Running cublasDaxpy-> N = 161480704:
+GPU exec time:	 Average=19.748418 ms, Min = 19.728899 ms, Max = 19.766092 ms
+Running cublasDaxpy-> N = 162529280:
+GPU exec time:	 Average=19.877148 ms, Min = 19.860029 ms, Max = 19.893885 ms
+Running cublasDaxpy-> N = 163577856:
+GPU exec time:	 Average=20.009229 ms, Min = 19.992828 ms, Max = 20.025969 ms
+Running cublasDaxpy-> N = 164626432:
+GPU exec time:	 Average=20.140951 ms, Min = 20.120859 ms, Max = 20.164013 ms
+Running cublasDaxpy-> N = 165675008:
+GPU exec time:	 Average=20.268552 ms, Min = 20.251989 ms, Max = 20.285130 ms
+Running cublasDaxpy-> N = 166723584:
+GPU exec time:	 Average=20.396650 ms, Min = 20.379066 ms, Max = 20.414114 ms
+Running cublasDaxpy-> N = 167772160:
+GPU exec time:	 Average=20.524890 ms, Min = 20.509005 ms, Max = 20.547152 ms
+Running cublasDaxpy-> N = 168820736:
+GPU exec time:	 Average=20.652981 ms, Min = 20.635128 ms, Max = 20.678997 ms
+Running cublasDaxpy-> N = 169869312:
+GPU exec time:	 Average=20.781200 ms, Min = 20.763159 ms, Max = 20.797968 ms
+Running cublasDaxpy-> N = 170917888:
+GPU exec time:	 Average=20.908997 ms, Min = 20.889997 ms, Max = 20.929813 ms
+Running cublasDaxpy-> N = 171966464:
+GPU exec time:	 Average=21.037850 ms, Min = 21.022081 ms, Max = 21.055937 ms
+Running cublasDaxpy-> N = 173015040:
+GPU exec time:	 Average=21.165118 ms, Min = 21.142960 ms, Max = 21.183968 ms
+Running cublasDaxpy-> N = 174063616:
+GPU exec time:	 Average=21.293809 ms, Min = 21.275997 ms, Max = 21.311998 ms
+Running cublasDaxpy-> N = 175112192:
+GPU exec time:	 Average=21.423001 ms, Min = 21.404982 ms, Max = 21.443129 ms
+Running cublasDaxpy-> N = 176160768:
+GPU exec time:	 Average=21.550198 ms, Min = 21.531820 ms, Max = 21.570921 ms
+Running cublasDaxpy-> N = 177209344:
+GPU exec time:	 Average=21.678562 ms, Min = 21.660089 ms, Max = 21.697998 ms
+Running cublasDaxpy-> N = 178257920:
+GPU exec time:	 Average=21.806622 ms, Min = 21.788120 ms, Max = 21.825075 ms
+Running cublasDaxpy-> N = 179306496:
+GPU exec time:	 Average=21.933947 ms, Min = 21.914959 ms, Max = 21.952152 ms
+Running cublasDaxpy-> N = 180355072:
+GPU exec time:	 Average=22.062721 ms, Min = 22.043943 ms, Max = 22.079945 ms
+Running cublasDaxpy-> N = 181403648:
+GPU exec time:	 Average=22.191172 ms, Min = 22.171974 ms, Max = 22.208929 ms
+Running cublasDaxpy-> N = 182452224:
+GPU exec time:	 Average=22.319481 ms, Min = 22.300959 ms, Max = 22.336006 ms
+Running cublasDaxpy-> N = 183500800:
+GPU exec time:	 Average=22.447338 ms, Min = 22.428036 ms, Max = 22.467852 ms
+Running cublasDaxpy-> N = 184549376:
+GPU exec time:	 Average=22.575493 ms, Min = 22.557020 ms, Max = 22.593021 ms
+Running cublasDaxpy-> N = 185597952:
+GPU exec time:	 Average=22.704260 ms, Min = 22.686958 ms, Max = 22.722960 ms
+Running cublasDaxpy-> N = 186646528:
+GPU exec time:	 Average=22.832017 ms, Min = 22.810936 ms, Max = 22.855997 ms
+Running cublasDaxpy-> N = 187695104:
+GPU exec time:	 Average=22.960210 ms, Min = 22.938967 ms, Max = 22.981882 ms
+Running cublasDaxpy-> N = 188743680:
+GPU exec time:	 Average=23.088319 ms, Min = 23.068905 ms, Max = 23.105145 ms
+Running cublasDaxpy-> N = 189792256:
+GPU exec time:	 Average=23.216560 ms, Min = 23.198843 ms, Max = 23.240089 ms
+Running cublasDaxpy-> N = 190840832:
+GPU exec time:	 Average=23.344409 ms, Min = 23.325920 ms, Max = 23.363829 ms
+Running cublasDaxpy-> N = 191889408:
+GPU exec time:	 Average=23.472838 ms, Min = 23.452044 ms, Max = 23.492098 ms
+Running cublasDaxpy-> N = 192937984:
+GPU exec time:	 Average=23.602221 ms, Min = 23.582935 ms, Max = 23.622990 ms
+Running cublasDaxpy-> N = 193986560:
+GPU exec time:	 Average=23.729458 ms, Min = 23.709774 ms, Max = 23.749113 ms
+Running cublasDaxpy-> N = 195035136:
+GPU exec time:	 Average=23.857062 ms, Min = 23.837090 ms, Max = 23.875952 ms
+Running cublasDaxpy-> N = 196083712:
+GPU exec time:	 Average=23.985140 ms, Min = 23.964882 ms, Max = 24.019003 ms
+Running cublasDaxpy-> N = 197132288:
+GPU exec time:	 Average=24.113870 ms, Min = 24.094820 ms, Max = 24.158001 ms
+Running cublasDaxpy-> N = 198180864:
+GPU exec time:	 Average=24.241509 ms, Min = 24.222136 ms, Max = 24.264097 ms
+Running cublasDaxpy-> N = 199229440:
+GPU exec time:	 Average=24.369562 ms, Min = 24.350882 ms, Max = 24.393082 ms
+Running cublasDaxpy-> N = 200278016:
+GPU exec time:	 Average=24.498022 ms, Min = 24.477959 ms, Max = 24.518013 ms
+Running cublasDaxpy-> N = 201326592:
+GPU exec time:	 Average=24.626031 ms, Min = 24.605989 ms, Max = 24.645090 ms
+Running cublasDaxpy-> N = 202375168:
+GPU exec time:	 Average=24.754691 ms, Min = 24.734020 ms, Max = 24.775028 ms
+Running cublasDaxpy-> N = 203423744:
+GPU exec time:	 Average=24.883058 ms, Min = 24.863005 ms, Max = 24.908066 ms
+Running cublasDaxpy-> N = 204472320:
+GPU exec time:	 Average=25.010929 ms, Min = 24.992943 ms, Max = 25.034189 ms
+Running cublasDaxpy-> N = 205520896:
+GPU exec time:	 Average=25.138731 ms, Min = 25.115967 ms, Max = 25.161028 ms
+Running cublasDaxpy-> N = 206569472:
+GPU exec time:	 Average=25.267580 ms, Min = 25.245905 ms, Max = 25.294065 ms
+Running cublasDaxpy-> N = 207618048:
+GPU exec time:	 Average=25.395348 ms, Min = 25.376797 ms, Max = 25.418997 ms
+Running cublasDaxpy-> N = 208666624:
+GPU exec time:	 Average=25.523953 ms, Min = 25.502920 ms, Max = 25.548935 ms
+Running cublasDaxpy-> N = 209715200:
+GPU exec time:	 Average=25.652058 ms, Min = 25.631905 ms, Max = 25.671005 ms
+Running cublasDaxpy-> N = 210763776:
+GPU exec time:	 Average=25.779688 ms, Min = 25.761843 ms, Max = 25.803804 ms
+Running cublasDaxpy-> N = 211812352:
+GPU exec time:	 Average=25.908341 ms, Min = 25.887966 ms, Max = 25.932074 ms
+Running cublasDaxpy-> N = 212860928:
+GPU exec time:	 Average=26.037309 ms, Min = 26.017904 ms, Max = 26.057005 ms
+Running cublasDaxpy-> N = 213909504:
+GPU exec time:	 Average=26.164837 ms, Min = 26.144028 ms, Max = 26.184082 ms
+Running cublasDaxpy-> N = 214958080:
+GPU exec time:	 Average=26.292691 ms, Min = 26.272058 ms, Max = 26.314974 ms
+Running cublasDaxpy-> N = 216006656:
+GPU exec time:	 Average=26.420782 ms, Min = 26.399851 ms, Max = 26.443958 ms
+Running cublasDaxpy-> N = 217055232:
+GPU exec time:	 Average=26.549492 ms, Min = 26.525021 ms, Max = 26.569843 ms
+Running cublasDaxpy-> N = 218103808:
+GPU exec time:	 Average=26.676848 ms, Min = 26.656151 ms, Max = 26.696920 ms
+Running cublasDaxpy-> N = 219152384:
+GPU exec time:	 Average=26.805520 ms, Min = 26.782990 ms, Max = 26.829004 ms
+Running cublasDaxpy-> N = 220200960:
+GPU exec time:	 Average=26.932738 ms, Min = 26.911974 ms, Max = 26.954889 ms
+Running cublasDaxpy-> N = 221249536:
+GPU exec time:	 Average=27.062030 ms, Min = 27.039051 ms, Max = 27.081966 ms
+Running cublasDaxpy-> N = 222298112:
+GPU exec time:	 Average=27.190900 ms, Min = 27.170897 ms, Max = 27.214050 ms
+Running cublasDaxpy-> N = 223346688:
+GPU exec time:	 Average=27.318592 ms, Min = 27.297974 ms, Max = 27.339935 ms
+Running cublasDaxpy-> N = 224395264:
+GPU exec time:	 Average=27.446451 ms, Min = 27.425051 ms, Max = 27.467966 ms
+Running cublasDaxpy-> N = 225443840:
+GPU exec time:	 Average=27.574813 ms, Min = 27.553797 ms, Max = 27.600050 ms
+Running cublasDaxpy-> N = 226492416:
+GPU exec time:	 Average=27.703121 ms, Min = 27.682066 ms, Max = 27.725935 ms
+Running cublasDaxpy-> N = 227540992:
+GPU exec time:	 Average=27.830849 ms, Min = 27.811050 ms, Max = 27.853012 ms
+Running cublasDaxpy-> N = 228589568:
+GPU exec time:	 Average=27.958980 ms, Min = 27.938128 ms, Max = 27.980089 ms
+Running cublasDaxpy-> N = 229638144:
+GPU exec time:	 Average=28.086891 ms, Min = 28.064013 ms, Max = 28.109074 ms
+Running cublasDaxpy-> N = 230686720:
+GPU exec time:	 Average=28.216281 ms, Min = 28.194904 ms, Max = 28.242826 ms
+Running cublasDaxpy-> N = 231735296:
+GPU exec time:	 Average=28.344111 ms, Min = 28.319836 ms, Max = 28.365850 ms
+Running cublasDaxpy-> N = 232783872:
+GPU exec time:	 Average=28.472867 ms, Min = 28.449774 ms, Max = 28.498888 ms
+Running cublasDaxpy-> N = 233832448:
+GPU exec time:	 Average=28.600039 ms, Min = 28.577805 ms, Max = 28.621912 ms
+Running cublasDaxpy-> N = 234881024:
+GPU exec time:	 Average=28.728640 ms, Min = 28.706074 ms, Max = 28.753042 ms
+Running cublasDaxpy-> N = 235929600:
+GPU exec time:	 Average=28.857453 ms, Min = 28.833866 ms, Max = 28.880119 ms
+Running cublasDaxpy-> N = 236978176:
+GPU exec time:	 Average=28.984501 ms, Min = 28.963089 ms, Max = 29.005051 ms
+Running cublasDaxpy-> N = 238026752:
+GPU exec time:	 Average=29.113343 ms, Min = 29.091835 ms, Max = 29.134989 ms
+Running cublasDaxpy-> N = 239075328:
+GPU exec time:	 Average=29.241779 ms, Min = 29.217958 ms, Max = 29.264212 ms
+Running cublasDaxpy-> N = 240123904:
+GPU exec time:	 Average=29.370060 ms, Min = 29.348135 ms, Max = 29.393196 ms
+Running cublasDaxpy-> N = 241172480:
+GPU exec time:	 Average=29.497888 ms, Min = 29.477119 ms, Max = 29.524088 ms
+Running cublasDaxpy-> N = 242221056:
+GPU exec time:	 Average=29.625731 ms, Min = 29.602051 ms, Max = 29.649019 ms
+Running cublasDaxpy-> N = 243269632:
+GPU exec time:	 Average=29.754319 ms, Min = 29.732943 ms, Max = 29.777050 ms
+Running cublasDaxpy-> N = 244318208:
+GPU exec time:	 Average=29.883389 ms, Min = 29.857874 ms, Max = 29.906034 ms
+Running cublasDaxpy-> N = 245366784:
+GPU exec time:	 Average=30.010200 ms, Min = 29.985905 ms, Max = 30.031919 ms
+Running cublasDaxpy-> N = 246415360:
+GPU exec time:	 Average=30.139990 ms, Min = 30.116081 ms, Max = 30.160904 ms
+Running cublasDaxpy-> N = 247463936:
+GPU exec time:	 Average=30.266979 ms, Min = 30.243158 ms, Max = 30.290842 ms
+Running cublasDaxpy-> N = 248512512:
+GPU exec time:	 Average=30.395710 ms, Min = 30.372858 ms, Max = 30.421972 ms
+Running cublasDaxpy-> N = 249561088:
+GPU exec time:	 Average=30.522647 ms, Min = 30.498028 ms, Max = 30.547142 ms
+Running cublasDaxpy-> N = 250609664:
+GPU exec time:	 Average=30.651469 ms, Min = 30.626774 ms, Max = 30.689001 ms
+Running cublasDaxpy-> N = 251658240:
+GPU exec time:	 Average=30.779989 ms, Min = 30.755997 ms, Max = 30.804157 ms
+Running cublasDaxpy-> N = 252706816:
+GPU exec time:	 Average=30.908210 ms, Min = 30.882120 ms, Max = 30.933142 ms
+Running cublasDaxpy-> N = 253755392:
+GPU exec time:	 Average=31.036210 ms, Min = 31.010866 ms, Max = 31.059980 ms
+Running cublasDaxpy-> N = 254803968:
+GPU exec time:	 Average=31.163802 ms, Min = 31.139851 ms, Max = 31.188011 ms
+Running cublasDaxpy-> N = 255852544:
+GPU exec time:	 Average=31.292639 ms, Min = 31.269073 ms, Max = 31.321049 ms
+Running cublasDaxpy-> N = 256901120:
+GPU exec time:	 Average=31.420429 ms, Min = 31.394005 ms, Max = 31.447887 ms
+Running cublasDaxpy-> N = 257949696:
+GPU exec time:	 Average=31.548321 ms, Min = 31.521082 ms, Max = 31.573057 ms
+Running cublasDaxpy-> N = 258998272:
+GPU exec time:	 Average=31.676109 ms, Min = 31.653881 ms, Max = 31.702042 ms
+Running cublasDaxpy-> N = 260046848:
+GPU exec time:	 Average=31.804698 ms, Min = 31.780005 ms, Max = 31.838894 ms
+Running cublasDaxpy-> N = 261095424:
+GPU exec time:	 Average=31.932549 ms, Min = 31.908989 ms, Max = 31.959057 ms
+Running cublasDaxpy-> N = 262144000:
+GPU exec time:	 Average=32.060909 ms, Min = 32.038927 ms, Max = 32.086849 ms
+Running cublasDaxpy-> N = 263192576:
+GPU exec time:	 Average=32.190392 ms, Min = 32.166958 ms, Max = 32.212973 ms
+Running cublasDaxpy-> N = 264241152:
+GPU exec time:	 Average=32.317441 ms, Min = 32.292128 ms, Max = 32.348871 ms
+Running cublasDaxpy-> N = 265289728:
+GPU exec time:	 Average=32.446458 ms, Min = 32.421827 ms, Max = 32.497883 ms
+Running cublasDaxpy-> N = 266338304:
+GPU exec time:	 Average=32.573452 ms, Min = 32.547951 ms, Max = 32.603025 ms
+Running cublasDaxpy-> N = 267386880:
+GPU exec time:	 Average=32.702198 ms, Min = 32.675982 ms, Max = 32.727003 ms
+Running cublasDaxpy-> N = 268435456:
+GPU exec time:	 Average=32.829580 ms, Min = 32.804966 ms, Max = 32.860041 ms
+Ran 256 Benchmarks.Finallizing...
+-----Destructing:

@@ -1,0 +1,239 @@
+///
+/// \author Anastasiadis Petros (panastas@cslab.ece.ntua.gr)
+///
+/// \brief The DGEMM CoCopeLia implementation.
+///
+
+#include <cblas.h>
+
+#include "CoCopeLia_subkernels.hpp"
+#include "CoCopeLia_Model.hpp"
+#include "gpu_utils.hpp"
+#include "cpu_utils.hpp"
+
+/* global variable declaration */
+double * gpu_dA = NULL, *gpu_dB = NULL, *gpu_dC = NULL;
+long long A_sz = -1, B_sz = -1, C_sz = -1;
+short lock_A = 0, lock_B = 0, lock_C = 0;
+CoCoModel_p glob_model;
+
+void CoCopeLia_Dgemm(CBLAS_TRANSPOSE cpu_op_A,  CBLAS_TRANSPOSE cpu_op_B, size_t M, size_t N, size_t K, double alpha, double* A, size_t ldA, double* B, size_t ldB, double beta, double* C, size_t ldC, int* Tin, short dev_id){
+	if(!A)error("CoCopeLia_Dgemm_Tile: A matrix unallocated");
+	else if(!B)error("CoCopeLia_Dgemm_Tile: B matrix unallocated");
+	else if(!C)error("CoCopeLia_Dgemm_Tile: C matrix unallocated");
+
+	// FIXME: Only works for No TRANS
+	if(cpu_op_A!= CblasNoTrans || cpu_op_B!= CblasNoTrans) error("CoCopeLia_Dgemm_Tile: Only implemented for NO TRANSA/B");
+
+	// TODO: For now use only one device;
+	int cur_id; cudaGetDevice(&cur_id);
+	if ( cur_id != dev_id) printf("CoCo_dgemm: Device change initiated(%d->%d)\n",cur_id, dev_id);
+	cudaSetDevice(dev_id);
+
+	short A_loc, B_loc, C_loc; 
+	double cpu_timer = csecond();
+
+        cudaHostRegister(A,sizeof(double)*M*K,cudaHostRegisterPortable);
+        cudaHostRegister(B,sizeof(double)*K*N,cudaHostRegisterPortable);
+        cudaHostRegister(C,sizeof(double)*M*N,cudaHostRegisterPortable);
+
+	A_loc = CoCopeLia_ptr_check_cuda_9_2(A,dev_id);
+	B_loc = CoCopeLia_ptr_check_cuda_9_2(B,dev_id);
+	C_loc = CoCopeLia_ptr_check_cuda_9_2(C,dev_id);	
+	cudaGetLastError();
+
+	cpu_timer = csecond() - cpu_timer; 
+	//fprintf(stderr, "CoCopeLia cudaHostRegister: t_reg = %lf ms\n", cpu_timer*1000);
+	
+	/// TODO: This could (should) be in the if function, only here because of h2d/d2h mode addition. 
+	CoCoModel_p model = NULL;
+	if(!glob_model) model = glob_model = CoCoModel_gemm_init( M, N, K, A_loc, B_loc, C_loc, dev_id, "Dgemm", 1);
+	else if (A_sz != M*K || B_sz != K*N || C_sz != M*N) model = CoCoModel_gemm_init( M, N, K, A_loc, B_loc, C_loc, dev_id, "Dgemm", 1);
+	else model = glob_model;
+
+	size_t T;
+	if (*Tin > 0){
+		T = *Tin; 
+		fprintf(stderr, "CoCopelia with input tile T = %zu\n", T);
+	}
+	else{
+		cpu_timer = csecond(); 
+		T = CoCoModel_optimize3(model);
+		cpu_timer = csecond() - cpu_timer; 
+		fprintf(stderr, "CoCopeLia predicted optimal tile T=%zu: t_pred = %lf ms\n", T , cpu_timer*1000);
+		*Tin = T;
+	}
+
+
+	if (T > M || T > N || T > K) error("CoCopeLia_Dgemm_Tile: T greater than dim"); 
+
+
+	cpu_timer = csecond();
+
+	short local_A = 0, local_B = 0, local_C = 0;
+	double *A_dev, *B_dev, *C_dev;
+
+	if (A_loc) {
+		if(!gpu_dA) {
+			gpu_dA = (double*) gpu_malloc(M * K *sizeof(double)); 
+			lock_A = 1; 
+			A_dev = gpu_dA; 
+			A_sz = M * K; 
+		}
+		else if (lock_A || A_sz < M * K){
+			A_dev = (double*) gpu_malloc(M * K *sizeof(double)); 
+			local_A = 1;
+		}
+		else {
+			lock_A = 1; 
+			A_dev = gpu_dA;
+		}
+	}
+	else A_dev = A; 
+
+	if (B_loc) {
+		if(!gpu_dB) {
+			gpu_dB = (double*) gpu_malloc(N * K *sizeof(double)); 
+			lock_B = 1; 
+			B_dev = gpu_dB; 
+			B_sz = N * K; 
+		}
+		else if (lock_B || B_sz < N * K){
+			B_dev = (double*) gpu_malloc(N * K *sizeof(double)); 
+			local_B = 1;
+		}
+		else {
+			lock_B = 1; 
+			B_dev = gpu_dB;
+		}
+	}
+	else B_dev = B; 
+
+	if (C_loc) {
+		if(!gpu_dC) {
+			gpu_dC = (double*) gpu_malloc(N * M *sizeof(double)); 
+			lock_C = 1; 
+			C_dev = gpu_dC; 
+			C_sz = N * M; 
+		}
+		else if (lock_C || C_sz < M * M){
+			C_dev = (double*) gpu_malloc(N * M *sizeof(double)); 
+			local_C = 1;
+		}
+		else {
+			lock_C = 1; 
+			C_dev = gpu_dC;
+		}
+	}
+	else C_dev = C; 
+	
+	cudaCheckErrors();
+	cpu_timer = csecond() - cpu_timer;
+	//fprintf(stderr, "Allocation successful for (A_loc = %d, B_loc = %d C_loc = %d): t_alloc = %lf ms\n", A_loc, B_loc, C_loc, cpu_timer*1000);
+
+	cpu_timer = csecond();
+	/// Generalize for not exact tiles
+	size_t Nlast = N%T , Mlast = M%T, Klast= K%T; 
+	size_t M_parts = M/T , N_parts = N/T, K_parts = K/T, current_ctr, ptr_offset;
+	if (Mlast > T/2) M_parts++;
+	else Mlast+=T;
+	if (Nlast > T/2) N_parts++;
+	else Nlast+=T;
+	if (Klast > T/2) K_parts++;
+	else Klast+=T;
+
+	int kernel_num = M_parts*N_parts*K_parts;
+
+	kernel3_p kernels[kernel_num];
+
+	size_t Tm = T,Tn = T, Tk = T;
+
+	for (int mi = 0; mi < M_parts; mi++)
+	{
+		if ( mi == M_parts - 1) Tm = Mlast;
+		else Tm = T; 
+		for (int ni = 0 ; ni < N_parts; ni++){
+			if ( ni == N_parts - 1) Tn = Nlast;
+			else Tn = T; 
+			for (int ki = 0; ki < K_parts; ki++){
+        			if ( ki == K_parts - 1) Tk = Klast;
+				else Tk = T; 
+        			current_ctr = mi*N_parts*K_parts + ni*K_parts + ki; 
+				kernels[current_ctr] = CoCopeLia_Dgemm_subkernel_init(M, N, K, Tm, Tn, Tk, A_loc, B_loc, C_loc, dev_id);
+
+        			ptr_offset = mi*T + ki*T*kernels[current_ctr]->ldA;
+        			kernels[current_ctr]->A_dev = &A_dev[ptr_offset];
+        			kernels[current_ctr]->As = &A[ptr_offset];
+
+        			ptr_offset = ni*T*kernels[current_ctr]->ldB + T*ki;
+        			kernels[current_ctr]->B_dev = &B_dev[ptr_offset];
+        			kernels[current_ctr]->Bs = &B[ptr_offset];
+
+        			ptr_offset = ni*T*kernels[current_ctr]->ldC + mi*T;
+				kernels[current_ctr]->C_dev = &C_dev[ptr_offset];
+				kernels[current_ctr]->Cs = &C[ptr_offset]; 
+				if (!ni) kernels[current_ctr]->AT_master = 1;
+				else kernels[current_ctr]->AT_master = 0;
+				if (!mi) kernels[current_ctr]->BT_master = 1;
+				else kernels[current_ctr]->BT_master = 0;
+				if (!ki) kernels[current_ctr]->CT_master = 1;
+				else kernels[current_ctr]->CT_master = 0;
+				if (ki == K_parts-1) kernels[current_ctr]->CT_out_master = 1;
+				else kernels[current_ctr]->CT_out_master = 0;
+			}
+    		}
+	}
+	fprintf(stderr, "Mlast = %d, Nlast = %d, Klast = %d, Kernels = %d\n", Mlast, Nlast, Klast, kernel_num);
+	cudaCheckErrors();
+	cpu_timer = csecond() - cpu_timer;
+	//fprintf(stderr, "Kernel initialization successful: t = %lf ms\n\n", cpu_timer*1000);
+
+cpu_timer = csecond();
+for (int mi = 0; mi < M_parts; mi++)
+  	for (int ni = 0 ; ni < N_parts; ni++)
+	{
+		for (int ki = 0; ki < K_parts; ki++)
+		{
+        		current_ctr = mi*N_parts*K_parts + ni*K_parts + ki; 
+
+			short d2hWaitForH2d = 0 ; 
+			if (C_loc && current_ctr == M_parts*N_parts*K_parts-1) d2hWaitForH2d = CoCoModel_choose_transfer_mode3(model, T); 
+			if (!ki) CoCopeLia_Dgemm_subkernel_async(alpha, beta, kernels[current_ctr],d2hWaitForH2d);
+        		else CoCopeLia_Dgemm_subkernel_async(alpha, 1.0, kernels[current_ctr], d2hWaitForH2d);
+    		}
+	}
+if (C_loc){
+	for (int mi = 0; mi < M_parts; mi++)
+		for (int ni = 0 ; ni < N_parts; ni++)
+		{
+        		current_ctr = mi*N_parts*K_parts + ni*K_parts + K_parts-1;
+        		CoCopeLia_Dgemm_subkernel_out(kernels[current_ctr]);
+    		}
+}
+cudaCheckErrors();
+cpu_timer = csecond() - cpu_timer;
+fprintf(stderr, "Kernel execution successful: t = %lf ms\n\n", cpu_timer*1000);
+cpu_timer = csecond();
+for (int mi = 0; mi < M_parts; mi++)
+  for (int ni = 0 ; ni < N_parts; ni++)
+	for (int ki = 0; ki < K_parts; ki++){
+        current_ctr = mi*N_parts*K_parts + ni*K_parts + ki; 
+	CoCopeLia_Dgemm_subkernel_destroy(kernels[current_ctr]);
+}
+cudaCheckErrors();
+cudaHostUnregister(A);
+cudaHostUnregister(B);
+cudaHostUnregister(C);
+cudaGetLastError();
+
+if (local_A) vec_free((void**)&A_dev, dev_id);
+else lock_A = 0; 
+if (local_B) vec_free((void**)&B_dev, dev_id);	
+else lock_B = 0; 
+if (local_C) vec_free((void**)&C_dev, dev_id);
+else lock_C = 0; 
+
+cudaCheckErrors();
+cpu_timer = csecond() - cpu_timer;
+return;
+}

@@ -1,0 +1,132 @@
+cmake_minimum_required (VERSION 3.10)
+#set(CMAKE_VERBOSE_MAKEFILE on)
+
+###TODO:Define specific compiler, flags, includes, libs for the target system (IF needed).
+
+## 1) CUDA + CUBLAS
+set (CUDA_PREFIX "/usr/local/cuda-9.2")
+
+# 	a) Compiler
+set (CMAKE_CUDA_COMPILER ${CUDA_PREFIX}/bin/nvcc)
+
+# 	b) Compile flags
+set (CMAKE_CUDA_FLAGS "-w -O3 -arch=sm_70") #35 for Tesla K40, 70 for V100, 61 for GTX 1060/70
+message("CMAKE_CUDA_FLAGS: " ${CMAKE_CUDA_FLAGS})
+
+# 	c) Includes
+set (CUDA_INCLUDE_DIRS ${CUDA_PREFIX}/include ${CUDA_PREFIX}/samples/common/inc)
+include_directories(${CUDA_INCLUDE_DIRS})
+message("CUDA_INCLUDE_DIRS: " ${CUDA_INCLUDE_DIRS})
+
+# 	d) Link Libraries
+set (CUDA_LD ${CUDA_PREFIX}/lib64) # or /lib depending on system
+set (CUDA_LINK "-L${CUDA_LD} -lcudart -lcublas -lcurand") #  
+message( "CUDA_LINK: " ${CUDA_LINK} )
+
+
+## 2) C++ 
+
+#	a) auto
+
+#	b) compile flags
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fopenmp -lm -std=gnu99 -Wuninitialized")
+message( "CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS})
+
+#	c) auto
+
+#	d) auto
+
+### Initialize the project 
+project (CoCopeLia CXX CUDA)
+message( "PROJECT_SOURCE_DIR: " ${PROJECT_SOURCE_DIR} )
+message( "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR} )
+message( "CMAKE_CURRENT_BINARY_DIR: " ${CMAKE_CURRENT_BINARY_DIR} )
+set ( PROJECT_LIB_DIR ${PROJECT_SOURCE_DIR}/lib )
+set ( PROJECT_MICROBENCH_DIR ${PROJECT_SOURCE_DIR}/microbenchmarks )
+set ( PROJECT_TESTING_DIR ${PROJECT_SOURCE_DIR}/testing )
+message( "PROJECT_LIB_DIR: " ${PROJECT_LIB_DIR} )
+message( "PROJECT_MICROBENCH_DIR: " ${PROJECT_MICROBENCH_DIR} )
+message( "PROJECT_TESTING_DIR: " ${PROJECT_TESTING_DIR} )
+
+###TODO: Define custom compile flags (IF needed).
+
+## 3) Name of the target machine to avoid confusion between testbeds.
+#add_definitions(-DMACHINE="testbed-I_Tesla-K40")
+add_definitions(-DMACHINE="testbed-II_Tesla-V100")
+
+## 4) Pass the EMLR directory as a string 
+add_definitions(-DPROJECTDIR="${PROJECT_SOURCE_DIR}")
+
+## 5) Define Benchmark Itteration number for each problem size. 
+add_definitions(-DITER=100)
+
+## 5) Perform Validation flag 
+add_definitions(-DVALIDATE)
+
+## 6) Version Flag
+add_definitions(-DVERSION="final")
+
+#OpenBLAS libs and includes (gold1 build)
+set (OBLAS_PREFIX "/home/users/panastas/Lib_install/OpenBLAS")
+set (OBLAS_INCLUDE_DIRS ${OBLAS_PREFIX}/include)
+include_directories(${OBLAS_INCLUDE_DIRS} )
+message( "OBLAS_INCLUDE_DIRS: " ${OBLAS_INCLUDE_DIRS} )
+set (OBLAS_LD ${OBLAS_PREFIX}/lib)
+set (OBLAS_LINK  "-L${OBLAS_LD} -lopenblas" )
+message( "OBLAS_LINK: " ${OBLAS_LINK} )
+
+# CoCopeLia header/include files
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include)
+message( "CoCopeLia files: " ${CMAKE_CURRENT_SOURCE_DIR}/include )
+
+set (INTERNAL_LINK_LIB "${CUDA_LINK} ${OBLAS_LINK} -lrt -ldl")
+message( "INTERNAL_LINK_LIB: " ${INTERNAL_LINK_LIB})
+
+file(GLOB LIBFILES ${PROJECT_LIB_DIR}/*.c* )
+add_library(MyLib ${LIBFILES})
+target_link_libraries(MyLib ${INTERNAL_LINK_LIB})
+
+#BLASX libs and includes 
+set (BLASX_PREFIX "/home/users/panastas/PhD_stuff/BLASX") #  (testbed-II-TeslaV100 build)
+#set (BLASX_PREFIX "/home/users/panastas/PhD_stuff/BLASX-dungani") (testbed-I-TeslaK40)
+set (BLASX_INCLUDE_DIRS ${BLASX_PREFIX}/include)
+include_directories(${BLASX_INCLUDE_DIRS} )
+message( "BLASX_INCLUDE_DIRS: " ${BLASX_INCLUDE_DIRS} )
+set (BLASX_LD ${BLASX_PREFIX}/lib)
+set (BLASX_LINK  "-L${BLASX_LD} -lblasx" )
+message( "BLASX_LINK: " ${BLASX_LINK} )
+
+set (LINK_LIB "${CUDA_LINK} ${BLASX_LINK} ${OBLAS_LINK} -lrt -ldl")
+message( "LINK_LIB: " ${LINK_LIB})
+
+add_executable (daxpy_microbench_gpu ${PROJECT_MICROBENCH_DIR}/daxpy_microbench_gpu.cu )
+add_executable (dgemv_microbench_gpu ${PROJECT_MICROBENCH_DIR}/dgemv_microbench_gpu.cu )
+add_executable (dgemm_microbench_gpu ${PROJECT_MICROBENCH_DIR}/dgemm_microbench_gpu.cu )
+add_executable (sgemm_microbench_gpu ${PROJECT_MICROBENCH_DIR}/sgemm_microbench_gpu.cu )
+add_executable (transfers_microbench_gpu ${PROJECT_MICROBENCH_DIR}/transfers_microbench_gpu.cu )
+
+add_executable (CoCopeLia_predict ${PROJECT_TESTING_DIR}/CoCopeLia_predict.cu )
+add_executable (cuBLASXt_Dgemm ${PROJECT_TESTING_DIR}/cuBLASXt_Dgemm.cpp )
+add_executable (BLASX_Dgemm ${PROJECT_TESTING_DIR}/BLASX_Dgemm.cpp )
+add_executable (CoCopeLia_Dgemm ${PROJECT_TESTING_DIR}/CoCopeLia_Dgemm.cpp )
+add_executable (Serial_Dgemm ${PROJECT_TESTING_DIR}/Serial_Dgemm.cpp )
+add_executable (cuBLASXt_Sgemm ${PROJECT_TESTING_DIR}/cuBLASXt_Sgemm.cpp )
+add_executable (BLASX_Sgemm ${PROJECT_TESTING_DIR}/BLASX_Sgemm.cpp )
+add_executable (CoCopeLia_Sgemm ${PROJECT_TESTING_DIR}/CoCopeLia_Sgemm.cpp )
+add_executable (Serial_Sgemm ${PROJECT_TESTING_DIR}/Serial_Sgemm.cpp )
+
+target_link_libraries(transfers_microbench_gpu ${LINK_LIB} MyLib)
+target_link_libraries(dgemm_microbench_gpu ${LINK_LIB} MyLib)
+target_link_libraries(sgemm_microbench_gpu ${LINK_LIB} MyLib)
+target_link_libraries(dgemv_microbench_gpu ${LINK_LIB} MyLib)
+target_link_libraries(daxpy_microbench_gpu ${LINK_LIB} MyLib)
+
+target_link_libraries(CoCopeLia_predict ${LINK_LIB} MyLib)
+target_link_libraries(cuBLASXt_Dgemm ${LINK_LIB} MyLib)
+target_link_libraries(BLASX_Dgemm ${LINK_LIB} MyLib)
+target_link_libraries(CoCopeLia_Dgemm ${LINK_LIB} MyLib)
+target_link_libraries(Serial_Dgemm ${LINK_LIB} MyLib)
+target_link_libraries(cuBLASXt_Sgemm ${LINK_LIB} MyLib)
+target_link_libraries(BLASX_Sgemm ${LINK_LIB} MyLib)
+target_link_libraries(CoCopeLia_Sgemm ${LINK_LIB} MyLib)
+target_link_libraries(Serial_Sgemm ${LINK_LIB} MyLib)
